@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>Student Teacher App</title>
-    <link rel="stylesheet" href="{% static './expense.css' %}">
+    <link rel="stylesheet" href="{% static './main.css' %}">
     <style>
         /* Style for the close button */
         .close-button {
@@ -40,9 +40,6 @@
             <br>
             <br>
             <input type="submit" style="font-size: 1em;" value="Get Student Teacher Data">
-            <button style="align-self: center;margin-left: 4em;font-size: 1em;" type="button" onclick="location.href='/student-teacher/generate-certificate' ">
-                <span class="glyphicon glyphicon-trash"> Generate Certificate </span>
-            </button>
         </form>
     </div>
 
@@ -82,6 +79,35 @@
             </table>
         </div>
 
+    </div>
+
+    <br>
+    <br>
+    <br>
+    <h2 style="color: white;"><u>To Generate Certificate</u></h2>
+    <div style="position: relative; text-align: center;">
+        <form action="/student-teacher/generate-certificate" style="font-size: 1em;color: white;" method="POST">
+            {% csrf_token %}
+            <label for="teacherSelect">Select a Teacher:</label>
+            <select id="teacherSelect" name="teacher">
+                <option value="None" selected>Select a Teacher</option>
+                {% for teacher in allteachers %}
+                <option value="{{teacher.id}}">{{teacher.name}}</option>
+                {% endfor %}
+            </select>
+            
+            <label for="studentSelect" style="margin-left: 4em;">Select a Student:</label>
+            <select id="studentSelect" name="student">
+                <option value="None" selected>Select a Student</option>
+                {% for student in allstudents %}
+                <option value="{{student.id}}">{{student.name}}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <br>
+            <br>
+            <input type="submit" style="font-size: 1em;" value="Generate Certificate">
+        </form>
     </div>
     
 </body>

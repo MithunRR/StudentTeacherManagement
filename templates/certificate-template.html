@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Certificate</title>
+    <style>
+        /* Add CSS styles for your certificate here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .certificate {
+            width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 2px solid #000;
+            text-align: center;
+        }
+
+        .certificate h1 {
+            font-size: 24px;
+        }
+
+        .certificate p {
+            font-size: 18px;
+        }
+
+        /* Customize styles as needed */
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <h1>Certificate of Completion</h1>
+        <p>
+            This is to certify that <strong>{{ student }}</strong><br>
+            was taught by <strong>{{ teacher }}</strong><br>
+            on {{ date }}
+        </p>
+    </div>
+</body>
+</html>
