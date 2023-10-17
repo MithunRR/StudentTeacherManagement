@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Teacher App</title>
+    <link rel="stylesheet" href="{% static './expense.css' %}">
+    <style>
+        /* Style for the close button */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <br>
+    <br>
+    <div style="position: relative; text-align: center;">
+        <form action="/student-teacher/get-data" style="font-size: 1em;color: white;" method="POST">
+            {% csrf_token %}
+            <label for="teacherSelect">Select a Teacher:</label>
+            <select id="teacherSelect" name="teacher">
+                <option value="None" selected>Select a Teacher</option>
+                {% for teacher in allteachers %}
+                <option value="{{teacher.id}}">{{teacher.name}}</option>
+                {% endfor %}
+            </select>
+            
+            <label for="studentSelect" style="margin-left: 4em;">Select a Student:</label>
+            <select id="studentSelect" name="student">
+                <option value="None" selected>Select a Student</option>
+                {% for student in allstudents %}
+                <option value="{{student.id}}">{{student.name}}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <br>
+            <br>
+            <input type="submit" style="font-size: 1em;" value="Get Student Teacher Data">
+            <button style="align-self: center;margin-left: 4em;font-size: 1em;" type="button" onclick="location.href='/student-teacher/generate-certificate' ">
+                <span class="glyphicon glyphicon-trash"> Generate Certificate </span>
+            </button>
+        </form>
+    </div>
+
+
+    <div style="display: inline-flex;">
+        <div style="color: white; min-width: -webkit-fill-available;margin-left: 10em;">
+            <h2 style="color: white;">Students</h2>
+            <table style="width: -webkit-fill-available;" border="1">
+                <tr>
+                    <th>Sr.No.</th>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                </tr>
+                {% for student in students_4_teacher %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{student.name}}</td>
+                    <td>{{student.rollno}}</td>            
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div style="color: white;min-width: -webkit-fill-available;margin-left: 10em;">
+            <h2 style="color: white;">Teachers</h2>
+            <table style="width: -webkit-fill-available;" border="1">
+                <tr>
+                    <th>Sr.No.</th>
+                    <th>Name</th>
+                </tr>
+                {% for teacher in teachers_4_student %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{teacher.name}}</td>          
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+    
+</body>
+</html>
