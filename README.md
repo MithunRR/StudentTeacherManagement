@@ -13,9 +13,12 @@
 * Install dependencies from requirements.txt
 * `pip install -r requirements.txt`
 
-  # Run Project
-  * Run Project using `python manage.py runserver`
-  * Open browser and goto to `http://localhost:8000`
+# Run Project
+* Run Project using `python manage.py runserver`
+* Open browser and goto to `http://localhost:8000`
+
+# To verify certificate 
+* Goto `http://localhost:8000/verify-certificate/[VERIFICATION-TOKEN]`
 
 # Additional Information
 * To access admin dashboard got to `http://localhost:8000/admin`

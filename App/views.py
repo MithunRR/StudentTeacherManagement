@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
-from .models import Teacher,Student
+from django.shortcuts import render, redirect, HttpResponse
+from .models import Teacher,Student,Certificate
 from .utils import render_to_pdf
 from datetime import datetime,date
 
 def index(request):
-    return render(request,"index.html",{})
+    return redirect("/student-teacher/default")
 
 
 def student_teacher(request,operation):
@@ -41,11 +41,29 @@ def student_teacher(request,operation):
         teacher = Teacher.objects.get(id=teacher_id)
         student = Student.objects.get(id=student_id)
 
-        template_name = "certificate-template.html"
+        try:
+            certificate= Certificate.objects.get(teacher=teacher,student=student)
+        except:
+            new_certificate= Certificate(teacher=teacher, student=student)
+            new_certificate.save()
 
-        return render_to_pdf(template_name,{"teacher":teacher.name,
+
+        # Generate JWT Token
+        import datetime
+        def generateToken(teacher,student):
+            payload = {
+                "teacher_id": teacher.id,
+                "student_id": student.id,
+                "exp": datetime.datetime.utcnow() + datetime.timedelta(days=30) # Token valid for 30 days
+            }
+            secret_key = "mithun" 
+            token = jwt.encode(payload, secret_key, algorithm='HS256')
+            return token
+
+        return render_to_pdf("certificate-template.html",{"teacher":teacher.name,
                 "student":student.name,
                 "date":date.today(),
+                "Token":generateToken(teacher,student),
             },
     )
     
@@ -53,13 +71,27 @@ def student_teacher(request,operation):
         return render(request,"studentteacher.html",{"allstudents":allstudents,"allteachers":allteachers})
     
 
+import jwt
 
-def students_for_teacher(request, teacher_id):
-    teacher = Teacher.objects.get(pk=teacher_id)
-    students = teacher.students.all()
-    return render(request, 'students_for_teacher.html', {'teacher': teacher, 'students': students})
-
-def teachers_for_student(request, student_id):
-    student = Student.objects.get(pk=student_id)
-    teachers = student.teacher_set.all()
-    return render(request, 'teachers_for_student.html', {'student': student, 'teachers': teachers})
+def verify_certificate(request, token):
+    try:
+        payload = jwt.decode(token, 'mithun', algorithms=['HS256'])
+        print("Pas", payload)
+        teacher_id = payload.get('teacher_id')
+        student_id = payload.get('student_id')
+        certificate = Certificate.objects.get(teacher__id=teacher_id, student__id=student_id)
+        
+        return render_to_pdf("certificate-template.html",{"teacher":certificate.teacher.name,
+                "student":certificate.student.name,
+                "date":date.today(),
+                "Token":token,
+            },)
+    
+    except jwt.ExpiredSignatureError:
+        return HttpResponse('Certificate token has expired.', status=400)
+    except jwt.DecodeError:
+        print("stue id",student_id)
+        print("teachet id",teacher_id)
+        return HttpResponse('Certificate token is invalid.', status=400)
+    except Certificate.DoesNotExist:
+        return HttpResponse('Certificate not found.', status=404)

@@ -17,3 +17,9 @@ class Teacher(models.Model):
 
     def __str__(self):
         return self.name
+    
+# For Certificate
+class Certificate(models.Model):
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+
